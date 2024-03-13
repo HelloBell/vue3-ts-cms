@@ -1,0 +1,21 @@
+<template>
+  <div class="app">
+    <el-config-provider :locale="locale">
+      <router-view />
+    </el-config-provider>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ElConfigProvider } from 'element-plus'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+
+const locale = zhCn
+</script>
+
+<style scoped>
+.app {
+  width: 100vw;
+  height: 100vh;
+}
+</style>
