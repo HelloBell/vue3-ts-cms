@@ -31,7 +31,9 @@
                   :placeholder="item.placeholder"
                   style="width: 100%"
                 >
-                  <template></template>
+                  <template v-for="option in item.options" :key="option.value">
+                    <el-option :label="option.label" :value="option.value" />
+                  </template>
                 </el-select>
               </template>
             </el-form-item>

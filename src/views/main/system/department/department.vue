@@ -12,7 +12,7 @@
       ref="pageContentRef"
     >
     </page-content>
-    <page-modal ref="pageModalRef"></page-modal>
+    <page-modal :modal-config="modalConfigRef" ref="pageModalRef"></page-modal>
   </div>
 </template>
 
@@ -22,8 +22,24 @@ import PageContent from '@/components/page-content/page-content.vue'
 import PageModal from '@/components/page-modal/page-modal.vue'
 import searchConfig from './config/search.config'
 import contentConfig from './config/content.config'
+import modalConfig from './config/modal.config'
+import { ref, computed } from 'vue'
+import useMainStore from '@/store/main/main'
 
-import { ref } from 'vue'
+// 对modalConfig进行操作
+const modalConfigRef = computed(() => {
+  const mainStore = useMainStore()
+  const departments = mainStore.entireDepartments.map((item) => {
+    return { label: item.name, value: item.id }
+  })
+  modalConfig.formItems.forEach((item) => {
+    if (item.prop === 'parentId') {
+      item.options.push(...departments)
+    }
+  })
+
+  return modalConfig
+})
 
 // 搜索/重置
 const pageContentRef = ref<InstanceType<typeof PageContent>>()
