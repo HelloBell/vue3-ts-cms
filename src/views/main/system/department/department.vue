@@ -6,19 +6,22 @@
       @reset-click="handleResetBtnClick"
     ></page-search>
     <page-content
+      :content-config="contentConfig"
       @new-click="handleNewBtnClick"
       @edit-click="handleEditBtnClick"
       ref="pageContentRef"
-    ></page-content>
+    >
+    </page-content>
     <page-modal ref="pageModalRef"></page-modal>
   </div>
 </template>
 
 <script setup lang="ts" name="department">
 import PageSearch from '@/components/page-search/page-search.vue'
-import PageContent from './c-cpns/page-content.vue'
-import PageModal from './c-cpns/page-modal.vue'
+import PageContent from '@/components/page-content/page-content.vue'
+import PageModal from '@/components/page-modal/page-modal.vue'
 import searchConfig from './config/search.config'
+import contentConfig from './config/content.config'
 
 import { ref } from 'vue'
 
