@@ -26,6 +26,9 @@ import modalConfig from './config/modal.config'
 import { ref, computed } from 'vue'
 import useMainStore from '@/store/main/main'
 
+import usePageContent from '@/hooks/usePageContent'
+import usePageModal from '@/hooks/usePageModal'
+
 // 对modalConfig进行操作
 const modalConfigRef = computed(() => {
   const mainStore = useMainStore()
@@ -41,23 +44,13 @@ const modalConfigRef = computed(() => {
   return modalConfig
 })
 
-// 搜索/重置
-const pageContentRef = ref<InstanceType<typeof PageContent>>()
-function handleQueryBtnClick(searchForm: any) {
-  pageContentRef.value?.fetchPageListData(searchForm)
-}
-function handleResetBtnClick() {
-  pageContentRef.value?.fetchPageListData()
-}
+// hooks 相同逻辑的抽取
+// 点击search centent的操作: 搜索/重置
+const { pageContentRef, handleQueryBtnClick, handleResetBtnClick } =
+  usePageContent()
 
-// 新建/编辑
-const pageModalRef = ref<InstanceType<typeof PageModal>>()
-function handleNewBtnClick() {
-  pageModalRef.value?.setModalVisible()
-}
-function handleEditBtnClick(itemData: any) {
-  pageModalRef.value?.setModalVisible(false, itemData)
-}
+// 点击content modal的操作: 新建/编辑
+const { pageModalRef, handleEditBtnClick, handleNewBtnClick } = usePageModal()
 </script>
 
 <style scoped>
