@@ -81,3 +81,25 @@ export function mapPathToBreadcrumbs(path: string, userMenus: any[]) {
   }
   return breadcrumbs
 }
+
+/**
+ * 菜单映射到id的列表
+ * @param menuList
+ * @returns menuIds
+ */
+export function mapMenuListToIds(menuList: any[]) {
+  const menuIds: any[] = []
+
+  function recurseGetId(menus: any[]) {
+    for (const item of menus) {
+      if (item.children) {
+        recurseGetId(item.children)
+      } else {
+        menuIds.push(item.id)
+      }
+    }
+  }
+  recurseGetId(menuList)
+
+  return menuIds
+}

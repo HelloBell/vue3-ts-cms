@@ -9,4 +9,5 @@ export interface IModalConfig {
 
 export interface IModalProps {
   modalConfig: IModalConfig
+  otherInfo: any
 }
