@@ -13,7 +13,7 @@
     />
     <page-modal
       :modal-config="modalConfig"
-      :other-info="othenInfo"
+      :other-info="otherInfo"
       ref="pageModalRef"
     >
       <template #menulist
@@ -24,7 +24,10 @@
           node-key="id"
           :props="{ children: 'children', label: 'name' }"
           @check="handleElTreeCheck"
-        />
+        >
+          <template #default="{ data }">{{ `${data.name} ` }}</template>
+          <template #empty> 菜单树数据为空 </template>
+        </el-tree>
       </template>
     </page-modal>
   </div>
@@ -54,28 +57,38 @@ import { nextTick } from 'vue'
 // 逻辑关系
 const { pageContentRef, handleQueryBtnClick, handleResetBtnClick } =
   usePageContent()
-const { pageModalRef, handleNewBtnClick, handleEditBtnClick } =
-  usePageModal(editCallBack)
+const { pageModalRef, handleNewBtnClick, handleEditBtnClick } = usePageModal(
+  newCallback,
+  editCallBack
+)
 
 const mainStore = useMainStore()
 const { entireMenus } = storeToRefs(mainStore)
 
 // 处理 ELTree 的选中
-const othenInfo = ref({})
+const otherInfo = ref({})
 function handleElTreeCheck(data1: any, data2: any) {
   console.log(data2.halfCheckedKeys, data2.checkedKeys)
   const menuList = [...data2.checkedKeys, ...data2.halfCheckedKeys]
-  othenInfo.value = { menuList }
+  otherInfo.value = { menuList }
 }
 
+const treeRef = ref<InstanceType<typeof ElTree>>()
+// 新建回调函数
+function newCallback() {
+  nextTick(() => {
+    treeRef.value?.setCheckedKeys([])
+  })
+}
+
+// 编辑回调函数
 // 编辑的回调 用于回显菜单树 不建议使用 default-checked-keys 属性(因为要单独设置另外一个默认展开的属性,否则默认部展开)
 // 这里使用 setCheckedKeys 方法
-const treeRef = ref<InstanceType<typeof ElTree>>()
 function editCallBack(itemData: any) {
   // 使用nextTick等DOM更新完毕 执行
   nextTick(() => {
     const menuList = itemData.menuList
-    const menuIds = mapMenuListToIds(menuList)
+    const { menuIds } = mapMenuListToIds(menuList)
     treeRef.value?.setCheckedKeys(menuIds)
   })
 }

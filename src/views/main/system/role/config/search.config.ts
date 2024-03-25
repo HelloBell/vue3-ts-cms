@@ -1,4 +1,5 @@
 const searchConfig = {
+  pageName: 'role',
   labelWidth: '80px',
   formItems: [
     {

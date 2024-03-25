@@ -70,8 +70,9 @@ function loginAction(isRemPwd: boolean) {
           localCache.removeCache('password')
         }
       })
+      ElMessage.success('登录成功')
     } else {
-      ElMessage.error('Oops, 请输入正确的格式后登陆')
+      ElMessage.error('登录失败')
     }
   })
 }

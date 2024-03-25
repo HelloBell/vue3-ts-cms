@@ -2,7 +2,7 @@
   <div class="content">
     <div class="header">
       <h2 class="title">{{ contentConfig?.header?.title }}</h2>
-      <el-button type="primary" @click="handleNewBtnClick">{{
+      <el-button v-if="isCreate" type="primary" @click="handleNewBtnClick">{{
         contentConfig.header?.btnTitle
       }}</el-button>
     </div>
@@ -23,9 +23,14 @@
             </el-table-column>
           </template>
           <template v-else-if="item.type === 'handler'">
-            <el-table-column v-bind="item" align="center">
+            <el-table-column
+              v-bind="item"
+              align="center"
+              v-if="isUpdate && isDelete"
+            >
               <template #default="scope">
                 <el-button
+                  v-if="isUpdate"
                   link
                   icon="Edit"
                   type="primary"
@@ -34,6 +39,7 @@
                   编辑
                 </el-button>
                 <el-button
+                  v-if="isDelete"
                   link
                   icon="Delete"
                   type="danger"
@@ -81,6 +87,7 @@ import { storeToRefs } from 'pinia'
 import useSystemStore from '@/store/main/system/system'
 import { formatUTC } from '@/utils/format'
 import { ref } from 'vue'
+import usePermissions from '@/hooks/usePermissions'
 
 interface IProps {
   contentConfig: {
@@ -96,6 +103,11 @@ interface IProps {
 const props = defineProps<IProps>()
 // 定义事件
 const emit = defineEmits(['newClick', 'editClick'])
+
+// 0.获取是否有对应的增删改查的权限
+const isCreate = usePermissions(`${props.contentConfig.pageName}:create`)
+const isDelete = usePermissions(`${props.contentConfig.pageName}:delete`)
+const isUpdate = usePermissions(`${props.contentConfig.pageName}:update`)
 
 // 1.发起action, 请求usersList的数据
 const systemStore = useSystemStore()

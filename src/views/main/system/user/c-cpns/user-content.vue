@@ -2,7 +2,9 @@
   <div class="content">
     <div class="header">
       <h2 class="title">用户列表</h2>
-      <el-button type="primary" @click="handleNewBtnClick">新建用户</el-button>
+      <el-button v-if="isCreate" type="primary" @click="handleNewBtnClick"
+        >新建用户</el-button
+      >
     </div>
     <div class="table">
       <el-table :data="usersList" stripe border style="width: 100%">
@@ -65,6 +67,7 @@
         <el-table-column label="操作" width="160px" align="center">
           <template #default="scope">
             <el-button
+              v-if="isUpdate"
               link
               icon="Edit"
               type="primary"
@@ -73,6 +76,7 @@
               编辑
             </el-button>
             <el-button
+              v-if="isDelete"
               link
               icon="Delete"
               type="danger"
@@ -103,9 +107,15 @@ import { storeToRefs } from 'pinia'
 import useSystemStore from '@/store/main/system/system'
 import { formatUTC } from '@/utils/format'
 import { ref } from 'vue'
+import usePermissions from '@/hooks/usePermissions'
 
 // 定义事件
 const emit = defineEmits(['newClick', 'editClick'])
+
+const isCreate = usePermissions('users:create')
+const isDelete = usePermissions('users:delete')
+const isUpdate = usePermissions('users:update')
+const isQuery = usePermissions('users:query')
 
 // 1.发起action, 请求usersList的数据
 const systemStore = useSystemStore()
@@ -126,6 +136,7 @@ function handleCurrentChange() {
 
 // 4.定义函数 用于发送网络请求
 function fetchUserListData(formData: any = {}) {
+  if (!isQuery) return
   // 1.获取offset/size
   const size = pageSize.value
   const offset = (currentPage.value - 1) * size

@@ -10,6 +10,8 @@ import {
   editPageData
 } from '@/service/main/system/system'
 import type { ISystemState } from './type'
+import { ElMessage } from 'element-plus'
+import useMainStore from '../main'
 
 const useSystemStore = defineStore('system', {
   state: (): ISystemState => ({
@@ -56,22 +58,34 @@ const useSystemStore = defineStore('system', {
       const { totalCount, list } = pageListResult.data
 
       this.pageList = list
-      this.pageTotalCount = totalCount
+      this.pageTotalCount = totalCount ?? 0
     },
     async deletePageByIdAction(pageName: string, id: number) {
       const deleteResult = await deletePageById(pageName, id)
       console.log(deleteResult)
       this.postPageListAction(pageName, { offset: 0, size: 10 })
+
+      // 重新获取完整的数据
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     },
     async newPageDataAction(pageName: string, dataInfo: any) {
       const newResult = await newPageData(pageName, dataInfo)
       console.log(newResult)
       this.postPageListAction(pageName, { offset: 0, size: 10 })
+
+      // 重新获取完整的数据
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     },
     async editPageDataAction(pageName: string, id: number, dataInfo: any) {
       const editResult = await editPageData(pageName, id, dataInfo)
       console.log(editResult)
       this.postPageListAction(pageName, { offset: 0, size: 10 })
+
+      // 重新获取完整的数据
+      const mainStore = useMainStore()
+      mainStore.fetchEntireDataAction()
     }
   }
 })

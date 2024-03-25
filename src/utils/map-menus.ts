@@ -85,14 +85,16 @@ export function mapPathToBreadcrumbs(path: string, userMenus: any[]) {
 /**
  * 菜单映射到id的列表
  * @param menuList
- * @returns menuIds
+ * @returns { menuIds菜单ID, parentIds父级菜单id }
  */
 export function mapMenuListToIds(menuList: any[]) {
+  const parentIds: any[] = []
   const menuIds: any[] = []
 
   function recurseGetId(menus: any[]) {
     for (const item of menus) {
       if (item.children) {
+        parentIds.push(item.id)
         recurseGetId(item.children)
       } else {
         menuIds.push(item.id)
@@ -100,6 +102,26 @@ export function mapMenuListToIds(menuList: any[]) {
     }
   }
   recurseGetId(menuList)
+  return { menuIds, parentIds }
+}
 
-  return menuIds
+/**
+ * 菜单映射按钮权限
+ * @param menuList
+ * @return 按钮权限数组
+ */
+export function mapMenusToPermissions(menuList: any[]) {
+  const permissions: any = []
+  function recurseGetPermissions(menus: any[]) {
+    for (const item of menus) {
+      if (item.type === 3) {
+        if (item.permission) permissions.push(item.permission)
+      } else {
+        recurseGetPermissions(item.children ?? [])
+      }
+    }
+  }
+  recurseGetPermissions(menuList)
+
+  return permissions
 }

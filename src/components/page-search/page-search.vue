@@ -1,5 +1,5 @@
 <template>
-  <div class="search">
+  <div class="search" v-if="isQuery">
     <el-form
       :model="searchForm"
       ref="formRef"
@@ -55,16 +55,22 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import type { ElForm } from 'element-plus'
+import usePermissions from '@/hooks/usePermissions'
 
 // 定义自定义事件/props属性
 interface IProps {
   searchConfig: {
+    pageName: string
     labelWidth: string
     formItems: any[]
   }
 }
 const emit = defineEmits(['queryClick', 'resetClick'])
 const props = defineProps<IProps>()
+
+// 搜索按钮权限 判断是否显示该组件
+const isQuery = usePermissions(`${props.searchConfig.pageName}:query`)
+console.log(isQuery)
 
 // 根据传进来的formItems 初始化form表单
 const initForm: any = {}
